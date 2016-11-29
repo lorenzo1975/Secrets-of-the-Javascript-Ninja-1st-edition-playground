@@ -1,0 +1,88 @@
+-<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+</head>
+<body>
+
+  <script>
+    
+    /*
+    function outer(){
+      var a = 1;
+      function inner(){} // does nothing
+      var b = 2;
+      if (a == 1) {
+        var c = 3;
+      }
+    }
+    outer();
+    */
+    
+    function assert(value, desc) {
+      var li = document.createElement("li");
+      li.className = value ? "pass" : "fail";
+      li.appendChild(document.createTextNode(desc));
+      document.getElementById("results").appendChild(li);
+    }
+    
+    function testCollection(outer, inner, a, b, c){
+      assert(typeof outer==='function', "outer() is in scope");
+      assert(typeof inner==='function', "inner() is in scope");
+      assert(typeof a==='number', "a is in scope");
+      assert(typeof b==='number', "b is in scope");
+      assert(typeof c==='number', "c is in scope");
+    }
+
+    window.onload = function(){
+      
+      assert(true,"|----- BEFORE OUTER -----|");
+      
+      testCollection(outer);
+      
+      function outer(){
+        assert(true,"|----- INSIDE OUTER, BEFORE a -----|");
+        
+        testCollection(outer, inner);
+        
+        var a = 1;
+        assert(true,"|----- INSIDE OUTER, AFTER a -----|");
+
+        testCollection(outer, inner, a);
+        
+        function inner(){ /* does nothing */ }
+        var b = 2;
+        assert(true,"|----- INSIDE OUTER, AFTER inner() AND b -----|");
+
+        testCollection(outer, inner, a, b);
+
+        if (a == 1){
+          var c = 3;
+          assert(true,"|----- INSIDE OUTER, INSIDE if -----|");
+      
+          testCollection(outer, inner, a, b, c);
+        
+        } // endif      
+      assert(true,"|----- INSIDE OUTER, OUTSIDE if -----|");
+        
+      testCollection(outer, inner, a, b);
+      }
+  
+      outer();
+      assert(true,"|----- AFTER OUTER -----|");
+      
+      testCollection(outer);
+    
+    }; // end window.onload
+
+  </script>
+  <style>
+    #results li.pass { color: green; }
+    #results li.fail { color: red; text-decoration: line-through }
+  </style>
+  </head>
+<body>
+  <ul id="results"></ul>
+</body>
